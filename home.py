@@ -184,7 +184,7 @@ class HomeScreen(pygame.Surface):
     def selected_layer_height_change(self, value):
         LayerCard.selected[-1].layer.layer_height += value
 
-    def merge(self):  # ToDo save the new surface as an image and assing its filename to the layercard!!!
+    def merge(self):
         right = bottom =  0
         left, top = self.get_size()
         layers = []
@@ -203,8 +203,8 @@ class HomeScreen(pygame.Surface):
             return
 
         surface = pygame.Surface((right - left, bottom - top), pygame.SRCALPHA, 32)
+        Layer.show_boarders = False
         for layer in layers:
-            # ToDo disable boarder showing before bliting
             sur, rect = layer.draw()
             x, y, w, h = rect
             surface.blit(sur, (x - left, y - top, w, h))
@@ -220,7 +220,7 @@ class HomeScreen(pygame.Surface):
         LayerCard.selected.append(card)
         self.layers_list.add_widget(card)
 
-    def export_image(self):  # ToDo save the new surface as an image and assing its filename to the layercard!!!
+    def export_image(self):
         right = bottom =  0
         left, top = self.get_size()
         layers = []
@@ -240,7 +240,6 @@ class HomeScreen(pygame.Surface):
 
         surface = pygame.Surface((right - left, bottom - top), pygame.SRCALPHA, 32)
         for layer in layers:
-            # ToDo disable boarder showing before bliting
             sur, rect = layer.draw()
             x, y, w, h = rect
             surface.blit(sur, (x - left, y - top, w, h))
@@ -272,7 +271,6 @@ class HomeScreen(pygame.Surface):
 
         surface = pygame.Surface((right - left, bottom - top), pygame.SRCALPHA|pygame.RESIZABLE, 32)
         for layer in layers:
-            # ToDo disable boarder showing before bliting
             sur, rect = layer.draw()
             x, y, w, h = rect
             surface.blit(sur, (x - left, y - top, w, h))

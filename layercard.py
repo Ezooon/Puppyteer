@@ -62,7 +62,7 @@ class LayerCard(MySurface):
         self.visible = False
 
         if filename in LayerCard.all:
-            filename += "0"  # Todo, instead save the new surface as a file and use it here
+            filename += "0"
         self.filename = filename
         LayerCard.all[self.filename] = self
 
@@ -126,7 +126,7 @@ class LayerCard(MySurface):
         self.visible_button.pressed = not self.visible
 
         self.blit(self.layer_image, (0, 0), self.get_rect())
-        write(self, self.name, 12, (self.size[1] + 5, 0))
+        write(self, self.name, 22, (self.size[1] + 5, 0))
 
         return super().draw()
 
@@ -146,11 +146,6 @@ class LayerCard(MySurface):
                     self.card_up()
                     self.pressed = False
                     break
-
-            # if self.pressed and self not in LayerCard.selected:
-            #     LayerCard.selected.append(self)
-            # elif not self.pressed and self in LayerCard.selected:
-            #     LayerCard.selected.remove(self) # Todo remove thtis block if no trouble happen
 
             if event.type == pygame.MOUSEMOTION and self.collidepoint(*pygame.mouse.get_pos()):
                 self.hovered_over = True

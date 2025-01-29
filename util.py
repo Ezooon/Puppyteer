@@ -113,8 +113,8 @@ class Movable:
                 break
 
 
-def write(screen=None, text="", text_size=40, pos=(0, 0), color=(0, 0, 0), center=False, d_rect=False,
-          font_name=join("assets", "vgafix.fon")):  #"comicbd.ttf")):
+def write(screen=None, text="", text_size=20, pos=(0, 0), color=(0, 0, 0), center=False, d_rect=False,
+          font_name=None):
     wfont = pygame.font.Font(font_name, text_size)
     text_image = wfont.render(text, True, color)
     text_rect = text_image.get_rect()
