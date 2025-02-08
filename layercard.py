@@ -15,8 +15,8 @@ class LayerCard(MySurface):
     between states. The class also provides drawing functionality to render its
     visual representation and contains UI elements such as buttons for additional actions.
 
-    :ivar selected: Stores the currently selected LayerCard instances.
-    :type selected: list[LayerCard]
+    :ivar selected_cards: Stores the currently selected LayerCard instances.
+    :type selected_cards: list[LayerCard]
     :ivar layer_image: Scaled image representation of the layer.
     :type layer_image: pygame.Surface
     :ivar name: Optional name for the layer, defaults to the name of the filename if not specified.
@@ -42,7 +42,7 @@ class LayerCard(MySurface):
     :ivar on_release: Callback function triggered when the LayerCard is released.
     :type on_release: callable
     """
-    selected = []
+    selected_cards = []
     
     all = dict()
 
@@ -56,7 +56,7 @@ class LayerCard(MySurface):
         self.pined_to_layer = None
         self.filename = filename
         layer_image = surface or pygame.image.load(filename).convert_alpha()
-        self.layer = Layer(layer_image, filename)
+        self.layer = Layer(layer_image, filename, self)
         self.layer_image = pygame.transform.scale(layer_image, [self.size[1]]*2)
         self.name = name or (split(filename)[-1])[:-4].replace("_", " ")
         self.visible = False
@@ -71,8 +71,21 @@ class LayerCard(MySurface):
         self.toggle = True
         self.pressed = False
         self.hovered_over = False
-        self.on_press = print
-        self.on_release = print
+        self.on_press = lambda: None
+        self.on_release = lambda: None
+
+    @property
+    def on_top(self):
+        return self == LayerCard.selected_cards[-1]
+
+    def put_on_top(self):
+        if self.on_top:
+            return
+
+        if self in LayerCard.selected_cards:
+            LayerCard.selected_cards.remove(self)
+
+        LayerCard.selected_cards.append(self)
 
     def _set_ui(self):
         self.visible_button = Button(pos=(50, 25), icon="assets/eye.png",
@@ -105,13 +118,12 @@ class LayerCard(MySurface):
         self.hovered_over_color = (100, 100, 100, 100)
         self.hovered_over_pressed_color = (100, 100, 100, 150)
 
-
     def show_hide(self):
         self.visible = not self.visible
         if self.visible:
-            if self in LayerCard.selected:
-                LayerCard.selected.remove(self)
-            LayerCard.selected.append(self)
+            if self in LayerCard.selected_cards:
+                LayerCard.selected_cards.remove(self)
+            LayerCard.selected_cards.append(self)
 
     def draw(self):
         if self.pressed and not self.hovered_over:
@@ -153,7 +165,7 @@ class LayerCard(MySurface):
             else:
                 self.hovered_over = False
                 break
-        if self.visible and self in LayerCard.selected:
+        if self.visible and self in LayerCard.selected_cards:
             self.layer.loop(events)
 
     def delete(self):
@@ -182,21 +194,21 @@ class LayerCard(MySurface):
         self.parent.add_widget(new, i+1)
 
     def card_down(self):
-        if LayerCard.pin_selection_mode and LayerCard.selected:
-            LayerCard.selected[-1].layer.pined_to_layer = self.layer
+        if LayerCard.pin_selection_mode and LayerCard.selected_cards:
+            LayerCard.selected_cards[-1].layer.pined_to_layer = self.layer
 
             ptx, pty, *_ = self.layer.image_rect
-            x, y, *_ = LayerCard.selected[-1].layer.image_rect
-            LayerCard.selected[-1].layer.pin_pos = x - ptx, y - pty
+            x, y, *_ = LayerCard.selected_cards[-1].layer.image_rect
+            LayerCard.selected_cards[-1].layer.pin_pos = x - ptx, y - pty
 
-            LayerCard.selected[-1].pined_to_layer = self
+            LayerCard.selected_cards[-1].pined_to_layer = self
             LayerCard.pin_selection_mode = False
             return
 
-        if self in LayerCard.selected:
-            LayerCard.selected.remove(self)
+        if self in LayerCard.selected_cards:
+            LayerCard.selected_cards.remove(self)
         else:
-            LayerCard.selected.append(self)
+            LayerCard.selected_cards.append(self)
 
     def card_up(self):
         pass
@@ -211,7 +223,7 @@ class LayerCard(MySurface):
         if exists(filename):
             layercard = LayerCard(filename=filename)
             cls.home.layers_list.add_widget(layercard)
-            cls.selected.append(layercard)
+            cls.selected_cards.append(layercard)
             return layercard
 
         return None

@@ -77,6 +77,7 @@ class MySurface(pygame.Surface):
         return self, [*self.pos, *self.size]
 
     def loop(self, events):
+        # ToDo I can make a much better event handler maybe make a class that register events and callbacks instead of this
         for widget in self.uix:
             widget.loop(events)
 

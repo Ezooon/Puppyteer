@@ -71,22 +71,22 @@ class HomeScreen(pygame.Surface):
         self.export_button = Button(icon="assets/export.png", size=40, pos=(5, h - 195))
         self.export_button.on_press = self.export_image
 
-        # mirror the selected layers to the left
+        # mirror the selected_cards layers to the left
         self.mirror_button = Button(icon="assets/mirror.png", size=40,
                                     pos=(5, h - 150))
         self.mirror_button.on_press = self.mirror_selected
 
-        # mirror the selected layers without flipping them
+        # mirror the selected_cards layers without flipping them
         self.mirror_copy_button = Button(icon="assets/mirror_copy.png", size=40,
                                          pos=(50, h - 150))
         self.mirror_copy_button.on_press = self.mirror_copy_selected
 
-        # replace the selected layers with a flipped version
+        # replace the selected_cards layers with a flipped version
         self.mirror_cut_button = Button(icon="assets/mirror_cut.png", size=40,
                                         pos=(95, h - 150))
         self.mirror_cut_button.on_press = self.mirror_cut_selected
 
-        # replace the selected layers with a flipped version
+        # replace the selected_cards layers with a flipped version
         self.show_boarders_button = Button(icon="assets/borders_eye.png", size=40,
                                            pos=(140, h - 150))
         self.show_boarders_button.on_press = lambda: setattr(Layer, "show_boarders", not Layer.show_boarders)
@@ -137,8 +137,8 @@ class HomeScreen(pygame.Surface):
         pygame.draw.rect(self, (0, 255, 0), (5, h - 90, 185, 60))
         pygame.draw.rect(self, (255, 255, 0), (191, h - 90, 185, 60))
         self.selected_layer_box_pos = (10, h - 85)
-        if LayerCard.selected:
-            card = LayerCard.selected[-1]
+        if LayerCard.selected_cards:
+            card = LayerCard.selected_cards[-1]
             self.selected_layer_width.value = card.layer.layer_width
             self.selected_layer_height.value = card.layer.layer_height
             self.blit(card, (10, h - 85), card.get_rect())
@@ -170,19 +170,19 @@ class HomeScreen(pygame.Surface):
         return None
 
     def mirror_selected(self):
-        LayerCard.selected[-1].layer.mirror()
+        LayerCard.selected_cards[-1].layer.mirror()
 
     def mirror_copy_selected(self):
-        LayerCard.selected[-1].layer.mirror_copy()
+        LayerCard.selected_cards[-1].layer.mirror_copy()
 
     def mirror_cut_selected(self):
-        LayerCard.selected[-1].layer.mirror_cut()
+        LayerCard.selected_cards[-1].layer.mirror_cut()
 
     def selected_layer_width_change(self, value):
-        LayerCard.selected[-1].layer.layer_width += value
+        LayerCard.selected_cards[-1].layer.layer_width += value
 
     def selected_layer_height_change(self, value):
-        LayerCard.selected[-1].layer.layer_height += value
+        LayerCard.selected_cards[-1].layer.layer_height += value
 
     def merge(self):
         right = bottom =  0
@@ -216,8 +216,8 @@ class HomeScreen(pygame.Surface):
         card = LayerCard(filename=path.join(self.folder, filename), name="merger")
         card.visible = True
 
-        LayerCard.selected = []
-        LayerCard.selected.append(card)
+        LayerCard.selected_cards = []
+        LayerCard.selected_cards.append(card)
         self.layers_list.add_widget(card)
 
     def export_image(self):
@@ -295,7 +295,7 @@ class HomeScreen(pygame.Surface):
         '''loading layers from folder'''
 
         LayerCard.all = dict()
-        LayerCard.selected = []
+        LayerCard.selected_cards = []
 
         data = dict()
 
